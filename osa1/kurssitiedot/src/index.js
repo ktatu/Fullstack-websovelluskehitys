@@ -3,17 +3,6 @@ import ReactDOM from 'react-dom'
 
 const App = () => {
 
-  const [ counter, setCounter ] = useState(0)
-
-  const handleClick = () => {
-    console.log('clicked')
-  }
-
-/*  setTimeout(
-    () => setCounter(counter + 1),
-    1000
-  )
-*/
   const course = {
     name: 'Half Stack application development',
     parts: [
@@ -37,11 +26,6 @@ const App = () => {
       <Header course={course.name} />
       <Content array={course.parts} />
       <Total array={course.parts} />
-
-      <div>{counter}</div>
-      <button onClick={() => setCounter(counter + 1)}>
-        plus
-      </button>
     </>
   )
 }
