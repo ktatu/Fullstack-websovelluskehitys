@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Header = props =>
-  <h1>{props.course}</h1>
+  <h2>{props.course}</h2>
 
 const Total = ({parts}) => {
   let total = parts.reduce((sum, part) => sum + part.exercises, 0) 
@@ -14,6 +14,7 @@ const Total = ({parts}) => {
 const Course = ({course}) => {
     return (
         <div>
+            <h1>Iso otsikko</h1>
             <Header course={course.name} />
             <Content parts={course.parts} />
             <Total parts={course.parts} />
