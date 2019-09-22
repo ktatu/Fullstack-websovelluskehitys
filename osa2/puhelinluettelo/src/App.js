@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import Person from './components/Person'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -55,6 +55,15 @@ const App = () => {
     }
     return newNumber
   }
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }, [])
 
   return (
     <div>
