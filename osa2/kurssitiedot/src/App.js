@@ -11,6 +11,7 @@ const App = ({courses}) => {
   
     return (
         <div>
+            <h1>Web development curriculum</h1>
             {renderCourses()}
         </div>
     )

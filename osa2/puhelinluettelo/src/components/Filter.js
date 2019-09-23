@@ -2,7 +2,9 @@ import React from 'react'
 
 const Filter = ({handleFilterInput, filterValue}) => {
     return (
-        <input value={filterValue} onChange={handleFilterInput} />
+        <div>
+            Filter:<input value={filterValue} onChange={handleFilterInput} />
+        </div>
     )
 }
 

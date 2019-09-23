@@ -1,11 +1,11 @@
 import React from 'react'
-import Countries from './Countries'
 
 const Country = ({country}) => {
 
     return (
         <div>
             <h2>{country.name}</h2>
+            <p>capital {country.capital}</p>
             <p>population {country.population}</p>
         
             <h3>languages</h3>

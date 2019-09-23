@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
+
+import personService from './services/persons'
 
 const App = () => {
   const [ newFilter, setNewFilter ] = useState('')
@@ -10,28 +13,65 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState(0)
 
-  const addPerson = (event) => {
+  const [notification, setNotification] = useState(null)
 
-    console.log('nimi printattuna addPersonissa: ', newName);
+  const addPerson = (event) => {
     event.preventDefault()
 
-    if (findPerson()) {
-      setPersons(persons.concat({ name: newName.toLocaleLowerCase(), number: newNumber}))
-      setNewName('')
-    } else {
-      window.alert(`${newName} is already added to phonebook`)
-      setNewName('')
+    const foundPerson = findPerson()
+
+    const personObject = {
+      name: newName,
+      number: newNumber
     }
+
+    if (foundPerson === undefined) {
+      personService
+        .create(personObject)
+          .then(returnedPerson => {
+            console.log(returnedPerson)
+            setPersons(persons.concat(returnedPerson))
+            successNotification('added', personObject.name)
+          })
+      setNewNumber(0)
+    } else {
+      if (newNumber !== foundPerson.number) {
+        eventReplaceNumber(foundPerson, 
+          window.confirm(`${newName} is already added to phonebook, replace old number?`))
+      } else {
+        window.alert(`${newName} is already added to phonebook`)
+      }
+      }
+    setNewName('')
+  }
+
+  const eventReplaceNumber = (foundPerson, confirmation) => {
+    if (confirmation) {
+      foundPerson.number = newNumber
+      personService
+        .update(foundPerson.id, foundPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== foundPerson.id ? person : returnedPerson))
+            successNotification('updated', foundPerson.name)
+          })
+        .catch(error => {
+          setNotification(`Error: ${foundPerson.name} has already been removed from the server`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
+    }
+    setNewName('')
+    setNewNumber(0)
   }
 
   const findPerson = () => {
-
-    const foundPerson = persons.filter(person => person.name === newName)
+    const foundPerson = persons.filter(person => person.name.toLocaleLowerCase() === newName.toLocaleLowerCase())
 
     if (foundPerson.length > 0) {
-      return false
+      return foundPerson[0]
     }
-    return true
+    return undefined
   }
 
   const handleFilterInput = (event) => {
@@ -39,13 +79,11 @@ const App = () => {
   }
 
   const handleNameInput = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value)  
   }
 
   const handleNumberInput = (event) => {
     setNewNumber(event.target.value)
-    console.log(newNumber);
   }
 
   //varmaan turha, useState('') aluksi(?)
@@ -56,18 +94,45 @@ const App = () => {
     return newNumber
   }
 
+  const deletePerson = (event) => {
+    event.preventDefault()
+    const person = persons.find(person => person.name === event.target.value)
+
+    const confirmation = window.confirm(`Delete ${person.name}?`)
+    if (confirmation) {
+      personService
+        .remove(person.id)
+          .then(responseStatus => {
+            if (responseStatus === 200) {
+              const newArray = persons.filter(listPerson => listPerson.name !== person.name)
+              setPersons(newArray)
+            }
+          })
+      successNotification('deleted', person.name)
+    }
+  }
+
+  const successNotification = (eventType, name) => {
+    setNotification(`${name} ${eventType}`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+    setNewName('')
+    setNewNumber(0)
+  }
+
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
+      personService
+        .getAll()
+          .then(initialPersons => setPersons(initialPersons))
   }, [])
 
   return (
     <div>
       <h1>Phonebook</h1>
+
+      <Notification message={notification} />
+
       <Filter handleFilterInput={handleFilterInput} filterValue={newFilter} />
 
       <PersonForm handleNumberInput={handleNumberInput} handleNameInput={handleNameInput} 
@@ -75,10 +140,9 @@ const App = () => {
         header='add a person' />
 
       <h2>Numbers</h2>
-      <Persons filter={newFilter} persons={persons} />
+      <Persons filter={newFilter} persons={persons} onClick={deletePerson} />
   </div>
   )
-
 }
 
 export default App
