@@ -1,2 +1,4 @@
 .history
 kertaus/
+.env
+node_modules/
