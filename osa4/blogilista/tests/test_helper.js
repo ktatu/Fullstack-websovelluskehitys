@@ -8,12 +8,30 @@ const initialBlogs = [ { title: "React patterns", author: "Michael Chan", url: "
 	{ title: "Type wars", author: "Robert C. Martin", url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html", likes: 2 }
 ]
 
+let testBlog = {
+	title: "testTitle",
+	author: "testAuthor",
+	url: "testUrl",
+	likes: 0
+}
+
 const blogsFromDatabase = async () => {
 	const blogs = await Blog.find({})
 	return blogs.map(blog => blog.toJSON())
 }
 
+const blogsWithoutId = blogs => blogs.map(blog => ({ title: blog.title, author: blog.author, url: blog.url, likes: blog.likes }))
+
+let blogWithFieldRemoved = (blog, fieldToRemove) => {
+	let blogToReturn = { ...blog }
+	delete blogToReturn[fieldToRemove]
+	return blogToReturn
+}
+
 module.exports = {
 	initialBlogs,
-	blogsFromDatabase
+	testBlog,
+	blogsFromDatabase,
+	blogWithFieldRemoved,
+	blogsWithoutId
 }

@@ -7,39 +7,78 @@ const helper = require("./test_helper")
 
 jest.setTimeout(10000)
 
-const initialBlogs = [ { title: "React patterns", author: "Michael Chan", url: "https://reactpatterns.com/", likes: 7 }, 
-	{ title: "Go To Statement Considered Harmful", author: "Edsger W. Dijkstra", url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html", likes: 5 }, 
-	{ title: "Canonical string reduction", author: "Edsger W. Dijkstra", url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html", likes: 12 }, 
-	{ title: "First class tests", author: "Robert C. Martin", url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll", likes: 10 }, 
-	{ title: "TDD harms architecture", author: "Robert C. Martin", url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html", likes: 0 }, 
-	{ title: "Type wars", author: "Robert C. Martin", url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html", likes: 2 }
-]
-
 beforeEach(async () => {
-	await Blog.deleteMany({})
+	const blogsToAdd = helper.initialBlogs
 
-	for (let blog of initialBlogs) {
-		let blogObject = new Blog(blog)
-		await blogObject.save()
+	const saveBlogs = async () => {
+		for (let blog of blogsToAdd) {
+			let blogObject = new Blog(blog)
+			await blogObject.save()
+		}
 	}
+	await Promise.all([Blog.deleteMany({}), saveBlogs()])
 })
 
-test("get-request returns correct amount of blogs as json", async () => {
-	const res = await api.get("/api/blogs")
-		.expect(200)
-		.expect("Content-Type", /application\/json/)
+describe("GET-request / blog-retrieval tests", () => {
+	test("get-request returns correct amount of blogs as json", async () => {
+		const res = await api.get("/api/blogs")
+			.expect(200)
+			.expect("Content-Type", /application\/json/)
+			
+		expect(res.body).toHaveLength(6)
+	})
+
+	test("field _id doesnt exist in retrieved blogs", async () => {
+		let blogs = await helper.blogsFromDatabase()
+		expect(blogs[0]._id).toBeFalsy()
+	})
+
+	test("field id exists in retrieved blogs", async () => {
+		let blogs = await helper.blogsFromDatabase()
+		expect(blogs[0].id).toBeDefined()
+	})
+})
+
+describe("POST-request / blog-saving related tests", () => {
+	test("post-request receives 201 status and Content-Type is application/json", async () => {
+		await api
+			.post("/api/blogs")
+			.send(helper.testBlog)
+			.expect(201)
+			.expect("Content-Type", /application\/json/)
+	
+		const res = await api.get("/api/blogs")
 		
-	expect(res.body).toHaveLength(6)
-})
+		const blogsFromDbWithoutId = helper.blogsWithoutId(res.body)
+	
+		expect(blogsFromDbWithoutId).toContainEqual(helper.testBlog)
+		expect(blogsFromDbWithoutId).toHaveLength(helper.initialBlogs.length + 1)
+	})
 
-test("field _id doesnt exist in blogs", async () => {
-	let blogs = await helper.blogsFromDatabase()
-	expect(blogs[0]._id).toBeFalsy()
-})
+	test("blog added without field 'likes' defaults to 0 likes", async () => {
+		let blogToAdd = { ...helper.testBlog }
+		delete blogToAdd.likes
 
-test("field id exists in blogs", async () => {
-	let blogs = await helper.blogsFromDatabase()
-	expect(blogs[0].id).toBeDefined()
+		const req = await api.post("/api/blogs").send(blogToAdd)
+		const res = await api.get("/api/blogs")
+		const blogsFromDbWithoutId = helper.blogsWithoutId(res.body)
+
+		Promise.all([req, res, blogsFromDbWithoutId])
+	
+		expect(blogsFromDbWithoutId).toContainEqual(helper.testBlog)
+	})
+
+	test("blog without field 'title' doesnt get saved", async () => {
+		await api.post("/api/blogs")
+			.send(helper.blogWithFieldRemoved(helper.testBlog, "title"))
+			.expect(400)
+	})
+
+	test("blog without field 'url' doesnt get saved", async () => {
+		await api.post("/api/blogs")
+			.send(helper.blogWithFieldRemoved(helper.testBlog, "url"))
+			.expect(400)
+	})
 })
 
 afterAll(() => {
