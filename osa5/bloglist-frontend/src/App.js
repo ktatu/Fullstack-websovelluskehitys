@@ -50,6 +50,22 @@ const App = () => {
     }
   }
 
+  const handleBlogSubmission = async (event) => {
+    event.preventDefault()
+
+    const newBlog = { 
+        title: blogTitle,
+        author: blogAuthor,
+        url: blogUrl
+    }
+
+    try {
+      await blogService.create(newBlog)
+    } catch (exception) {
+        console.log(exception)
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -76,7 +92,7 @@ const App = () => {
 
       <h2>create new</h2>
 
-      <form>
+      <form onSubmit={handleBlogSubmission}>
         <div>
           title:
           <input type="text" value={blogTitle} onChange={({ target }) => setBlogTitle(target.value)} />
@@ -89,6 +105,7 @@ const App = () => {
           url: 
           <input type="text" value={blogUrl} onChange={({ target }) => setBlogUrl(target.value)} />
         </div>
+        <button type="submit">create</button>
       </form>
       
       <br />
