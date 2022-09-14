@@ -15,11 +15,11 @@ const create = async  (blogData) => {
 
   const res = await axios.post(baseUrl, blogData, config)
 
-  return res
+  return res.data
 }
 
 const setToken = token => {
-    userToken = token
+    userToken = `bearer ${token}`
 }
 
 export default { getAll, create, setToken }

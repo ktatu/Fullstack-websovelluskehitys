@@ -25,6 +25,7 @@ const App = () => {
     if (loggedUserJSON) {
         const user = JSON.parse(loggedUserJSON)
         setUser(user)
+        blogService.setToken(user.token)
     }
   }, [])
 
@@ -35,13 +36,15 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({username, password})
 
       setUser(user)
       setUsername("")
       setPassword("")
+
+      blogService.setToken(user.token)
 
       const loggedUserJSON = JSON.stringify(user)
       window.localStorage.setItem('loggedUser', loggedUserJSON)
@@ -50,7 +53,7 @@ const App = () => {
     }
   }
 
-  const handleBlogSubmission = async (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
 
     const newBlog = { 
@@ -60,7 +63,9 @@ const App = () => {
     }
 
     try {
-      await blogService.create(newBlog)
+      const returnedBlog = await blogService.create(newBlog)
+      console.log("returned blog ", returnedBlog)
+      //setBlogs(blogs.concat(returnedBlog))
     } catch (exception) {
         console.log(exception)
     }
@@ -92,7 +97,7 @@ const App = () => {
 
       <h2>create new</h2>
 
-      <form onSubmit={handleBlogSubmission}>
+      <form onSubmit={addBlog}>
         <div>
           title:
           <input type="text" value={blogTitle} onChange={({ target }) => setBlogTitle(target.value)} />
