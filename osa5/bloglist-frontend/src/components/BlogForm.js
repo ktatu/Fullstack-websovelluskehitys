@@ -1,10 +1,19 @@
 import { useState } from "react"
 
-const BlogForm = ({ addBlog }) => {
-
+const BlogForm = ({ createBlog }) => {
     const [blogTitle, setBlogTitle] = useState("")
     const [blogAuthor, setBlogAuthor] = useState("")
     const [blogUrl, setBlogUrl] = useState("")
+
+    const addBlog = (event) => {
+        event.preventDefault()
+        
+        createBlog({ title: blogTitle, author: blogAuthor, url: blogUrl })
+    
+        setBlogTitle("")
+        setBlogAuthor("")
+        setBlogUrl("")
+      }
 
     return (
         <div>
@@ -27,4 +36,4 @@ const BlogForm = ({ addBlog }) => {
     )
 }
 
-export { BlogForm }
+export default BlogForm

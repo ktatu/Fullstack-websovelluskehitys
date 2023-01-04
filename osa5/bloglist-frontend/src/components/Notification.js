@@ -21,4 +21,4 @@ const style = {
     marginBottom: 10
   }
 
-export { Notification }
+export default Notification
