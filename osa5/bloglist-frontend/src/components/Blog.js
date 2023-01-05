@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
     const [expandedBlogViewState, setExpandedBlogViewState] = useState(false)
@@ -63,6 +64,13 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
             }
         </div>
     )
+}
+
+Blog.propTypes = {
+    blog: PropTypes.object.isRequired,
+    addLike: PropTypes.func.isRequired,
+    loggedInUsername: PropTypes.string.isRequired,
+    deleteBlog: PropTypes.func.isRequired
 }
 
 export default Blog
