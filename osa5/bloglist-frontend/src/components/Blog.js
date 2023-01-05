@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
     const [expandedBlogViewState, setExpandedBlogViewState] = useState(false)
 
     const handleBlogView = (event) => {
@@ -13,6 +13,12 @@ const Blog = ({ blog, addLike }) => {
         let newLikes = blog.likes += 1
         addLike({ ...blog, likes: newLikes, user: blog.user.id })
     }
+
+    const handleBlogRemoval = (event) => {
+        deleteBlog(blog.id)
+    }
+
+    const showDeleteButton = { display: loggedInUsername === blog.user.username ? '' : 'none' }
 
     const blogStyle = {
         paddingTop: 10,
@@ -41,6 +47,10 @@ const Blog = ({ blog, addLike }) => {
                 likes {blog.likes} <button onClick={handleLikeButton}>like</button>
                 <br />
                 {blog.author}
+                <br />
+                <div style = {showDeleteButton}>
+                    <button onClick={handleBlogRemoval}>delete</button>
+                </div>
             </div>
         )
     }
