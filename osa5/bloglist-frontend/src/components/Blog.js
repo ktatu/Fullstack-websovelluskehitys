@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from "react"
+import PropTypes from "prop-types"
 
 const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
     const [expandedBlogViewState, setExpandedBlogViewState] = useState(false)
 
-    const handleBlogView = (event) => {
+    const handleBlogView = () => {
         setExpandedBlogViewState(!expandedBlogViewState)
     }
 
@@ -15,17 +15,17 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
         addLike({ ...blog, likes: newLikes, user: blog.user.id })
     }
 
-    const handleBlogRemoval = (event) => {
+    const handleBlogRemoval = () => {
         deleteBlog(blog.id)
     }
 
-    const showDeleteButton = { display: loggedInUsername === blog.user.username ? '' : 'none' }
+    const showDeleteButton = { display: loggedInUsername === blog.user.username ? "" : "none" }
 
     const blogStyle = {
         paddingTop: 10,
         paddingLeft: 2,
         paddingBottom: 5,
-        border: 'solid',
+        border: "solid",
         borderWidth: 1,
         marginBottom: 5
     }
