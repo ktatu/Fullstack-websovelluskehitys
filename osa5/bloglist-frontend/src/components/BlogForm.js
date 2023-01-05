@@ -13,7 +13,7 @@ const BlogForm = ({ createBlog }) => {
         setBlogTitle("")
         setBlogAuthor("")
         setBlogUrl("")
-      }
+    }
 
     return (
         <div>

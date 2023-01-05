@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 
-const Blog = ({blog}) => {
+const Blog = ({ blog, addLike }) => {
     const [expandedBlogViewState, setExpandedBlogViewState] = useState(false)
 
     const handleBlogView = (event) => {
         setExpandedBlogViewState(!expandedBlogViewState)
+    }
+
+    const handleLikeButton = (event) => {
+        event.preventDefault()
+
+        let newLikes = blog.likes += 1
+        addLike({ ...blog, likes: newLikes, user: blog.user.id })
     }
 
     const blogStyle = {
@@ -31,7 +38,7 @@ const Blog = ({blog}) => {
                 <br />
                 {blog.url}
                 <br />
-                likes {blog.likes} <button>like</button>
+                likes {blog.likes} <button onClick={handleLikeButton}>like</button>
                 <br />
                 {blog.author}
             </div>
