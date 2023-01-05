@@ -16,11 +16,12 @@ const App = () => {
 
   const [notification, setNotification] = useState(null)
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+    useEffect(() => {
+        blogService.getAll().then((blogs) => {
+            blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
+            setBlogs( blogs )
+        })  
+    }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -31,6 +32,8 @@ const App = () => {
         blogService.setToken(user.token)
     }
   }, [])
+
+  //const sortBlogs = () => blogs.sort((firstBlog, secondBlog) => secondBlog.likes - firstBlog.likes)
 
   const notify = (message) => {
     setNotification(message)
@@ -79,8 +82,12 @@ const App = () => {
         console.log("blog ", blog)
         const changedBlog = await blogService.update(blog)
 
-        const newBlogsArray = blogs.filter((blog) => blog.id !== changedBlog.id)
-        setBlogs(newBlogsArray.concat(changedBlog))
+        const newBlogsArray = blogs
+            .filter((blog) => blog.id !== changedBlog.id)
+            .concat(changedBlog)
+            .sort((blog1, blog2) => blog2.likes - blog1.likes)
+
+        setBlogs(newBlogsArray)
     } catch (exception) {
         console.log(exception)
     }
