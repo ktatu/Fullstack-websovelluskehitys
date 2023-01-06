@@ -33,7 +33,9 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
     const MinimalBlogView = () => {
         return (
             <div>
-                {blog.title} {blog.author} <button onClick={handleBlogView}>View</button>
+                <div>{blog.title}</div>
+                <div>{blog.author}</div>
+                <button id="expandedViewButton" onClick={handleBlogView}>View</button>
             </div>
         )
     }
@@ -43,11 +45,17 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
             <div>
                 {blog.title} {blog.author} <button onClick={handleBlogView}>Hide</button>
                 <br />
-                {blog.url}
+                <div>
+                    {blog.url}
+                </div>
                 <br />
-                likes {blog.likes} <button onClick={handleLikeButton}>like</button>
+                <div>
+                    likes {blog.likes} <button onClick={handleLikeButton}>like</button>
+                </div>
                 <br />
-                {blog.author}
+                <div>
+                    {blog.author}
+                </div>
                 <br />
                 <div style = {showDeleteButton}>
                     <button onClick={handleBlogRemoval}>delete</button>
