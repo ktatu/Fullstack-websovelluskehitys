@@ -13,7 +13,8 @@ describe("<Blog />,", () => {
         url: "https://example.com",
         likes: 1,
         user: {
-            username: "testUser"
+            username: "testUser",
+            name: "testUser"
         }
     }
 
@@ -33,9 +34,14 @@ describe("<Blog />,", () => {
         screen.getByText("https://example.com")
     })
 
-    test("renders user (who submitted blog) in expanded view", async () => {
+    test("renders user's name (who submitted blog) in expanded view", async () => {
         await openExpandedView()
-        screen.getByText("testUser", { exact: false })
+        screen.getByText("testUser")
+    })
+
+    test("renders blog's likes in expanded view", async () => {
+        await openExpandedView()
+        screen.getByText("likes " + testBlog.likes)
     })
 })
 
