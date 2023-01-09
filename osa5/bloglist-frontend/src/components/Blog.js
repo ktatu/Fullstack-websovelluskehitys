@@ -19,6 +19,8 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
         deleteBlog(blog.id)
     }
 
+    console.log("blog ", blog)
+
     const showDeleteButton = { display: loggedInUsername === blog.user.username ? "" : "none" }
 
     const blogStyle = {
@@ -54,7 +56,7 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
                 </div>
                 <br />
                 <div>
-                    {blog.author}
+                    {blog.user.name}
                 </div>
                 <br />
                 <div style = {showDeleteButton}>

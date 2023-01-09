@@ -35,7 +35,7 @@ describe("<Blog />,", () => {
 
     test("renders user (who submitted blog) in expanded view", async () => {
         await openExpandedView()
-        screen.getByText("testUser")
+        screen.getByText("testUser", { exact: false })
     })
 })
 

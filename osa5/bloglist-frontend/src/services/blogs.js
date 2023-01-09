@@ -9,6 +9,8 @@ const getAll = () => {
 }
 
 const create = async (blogData) => {
+    console.log("blog data ", blogData)
+
     const config = {
         headers: { Authorization: userToken }
     }
