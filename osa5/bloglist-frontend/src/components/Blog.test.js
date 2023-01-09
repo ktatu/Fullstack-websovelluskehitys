@@ -4,45 +4,62 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import Blog from "./Blog"
 
-describe("<Blog />,", () => {
+
+const testBlog = {
+    author: "Test Author",
+    title: "Test Title",
+    url: "https://example.com",
+    likes: 1,
+    user: {
+        username: "testUser",
+        name: "testUser"
+    }
+}
+
+const mockLikeHandler = jest.fn()
+const mockDeletionHandler = jest.fn()
+
+beforeEach(() => {
+    render(<Blog blog={testBlog} addLike={mockLikeHandler} deleteBlog={mockDeletionHandler} loggedInUsername="testUser" />)
+})
+
+test("like-button's event handler gets called", async () => {
+    await openExpandedView()
+
+    const button = screen.getByText("like")
+    await userEvent.click(button)
+    await userEvent.click(button)
+
+    expect(mockLikeHandler).toHaveBeenCalledTimes(2)
+})
+
+describe("<Blog /> renders", () => {
     //let container
 
-    const testBlog = {
-        author: "Test Author",
-        title: "Test Title",
-        url: "https://example.com",
-        likes: 1,
-        user: {
-            username: "testUser",
-            name: "testUser"
-        }
-    }
-
-    const addLike = jest.fn()
-    const deleteBlog = jest.fn()
-
-    beforeEach(() => {
-        render(<Blog blog={testBlog} addLike={addLike} deleteBlog={deleteBlog} loggedInUsername="testUser" />)
-    })
-
-    test("renders title in minimal view", () => {
+    test("title in minimal view", () => {
         screen.getByText("Test Author")
     })
 
-    test("renders url in expanded view", async () => {
-        await openExpandedView()
-        screen.getByText("https://example.com")
+
+    describe("(in expanded view):", () => {
+        beforeEach(async () => {
+            await openExpandedView()
+        })
+
+        test("url", async () => {
+            screen.getByText("https://example.com")
+        })
+
+        test("submitter's name", async () => {
+            screen.getByText("testUser")
+        })
+
+        test("blog's likes", async () => {
+            screen.getByText("likes " + testBlog.likes)
+        })
+
     })
 
-    test("renders user's name (who submitted blog) in expanded view", async () => {
-        await openExpandedView()
-        screen.getByText("testUser")
-    })
-
-    test("renders blog's likes in expanded view", async () => {
-        await openExpandedView()
-        screen.getByText("likes " + testBlog.likes)
-    })
 })
 
 const openExpandedView = async () => {
