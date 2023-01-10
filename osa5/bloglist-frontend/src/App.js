@@ -5,6 +5,7 @@ import loginService from "./services/login"
 import Notification from "./components/Notification"
 import BlogForm from "./components/BlogForm"
 import Togglable from "./components/Togglable"
+import LoginForm from "./components/LoginForm"
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -17,13 +18,6 @@ const App = () => {
     const [notification, setNotification] = useState(null)
 
     useEffect(() => {
-        blogService.getAll().then((blogs) => {
-            blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
-            setBlogs( blogs )
-        })
-    }, [])
-
-    useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem("loggedUser")
 
         if (loggedUserJSON) {
@@ -31,6 +25,13 @@ const App = () => {
             setUser(user)
             blogService.setToken(user.token)
         }
+    }, [])
+
+    useEffect(() => {
+        blogService.getAll().then((blogs) => {
+            blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
+            setBlogs( blogs )
+        })
     }, [])
 
     //const sortBlogs = () => blogs.sort((firstBlog, secondBlog) => secondBlog.likes - firstBlog.likes)
@@ -103,21 +104,17 @@ const App = () => {
 
     if (user === null) {
         return (
-            <div>
+            <>
                 <Notification message={notification} />
                 <h2>Please login</h2>
-                <form onSubmit={handleLogin}>
-                    <div>
-            username
-                        <input type="text" value={username} onChange={({ target }) => setUsername(target.value)} />
-                    </div>
-                    <div>
-            password
-                        <input type="password" value={password} onChange={({ target }) => setPassword(target.value)} />
-                    </div>
-                    <button type="submit">login</button>
-                </form>
-            </div>
+                <LoginForm
+                    username={username}
+                    password={password}
+                    handleLogin={handleLogin}
+                    setUsername={setUsername}
+                    setPassword={setPassword}
+                />
+            </>
         )
     }
 
