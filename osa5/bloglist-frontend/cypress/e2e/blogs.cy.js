@@ -68,8 +68,10 @@ describe("Blog app", function() {
 
         })
 
-        /*
         it("A blog can be liked", function() {
+            cy.createBlog(cypressBlog)
+            cy.visit("http://localhost:3000")
+
             cy
                 .get("#expandedViewButton")
                 .click()
@@ -80,7 +82,6 @@ describe("Blog app", function() {
 
             cy.contains("likes 1")
         })
-        */
     })
 
 })
