@@ -47,7 +47,40 @@ describe("Blog app", function() {
                 .click()
 
             cy.contains(`${cypressBlog.title} by ${cypressBlog.author} added`)
+            cy.contains(cypressBlog.author)
         })
+
+        it("A blog can be deleted", function() {
+            cy.createBlog(cypressBlog)
+            cy.visit("http://localhost:3000")
+
+            cy
+                .get("#expandedViewButton")
+                .click()
+
+            cy
+                .contains("delete")
+                .click()
+
+            cy.
+                contains(cypressBlog.title)
+                .should("not.exist")
+
+        })
+
+        /*
+        it("A blog can be liked", function() {
+            cy
+                .get("#expandedViewButton")
+                .click()
+
+            cy
+                .contains("like")
+                .click()
+
+            cy.contains("likes 1")
+        })
+        */
     })
 
 })
