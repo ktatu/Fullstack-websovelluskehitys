@@ -19,8 +19,6 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
         deleteBlog(blog.id)
     }
 
-    console.log("blog ", blog)
-
     const showDeleteButton = { display: loggedInUsername === blog.user.username ? "" : "none" }
 
     const blogStyle = {
@@ -37,7 +35,7 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
             <div>
                 <div>{blog.title}</div>
                 <div>{blog.author}</div>
-                <button id="expandedViewButton" onClick={handleBlogView}>View</button>
+                <button className="expandedViewButton" id={"expandedViewButton-" + blog.id} onClick={handleBlogView}>View</button>
             </div>
         )
     }
@@ -45,14 +43,14 @@ const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
     const ExpandedBlogView = () => {
         return (
             <div>
-                {blog.title} {blog.author} <button onClick={handleBlogView}>Hide</button>
+                <span className="blog-title">{blog.title}</span> {blog.author}<button onClick={handleBlogView}>Hide</button>
                 <br />
                 <div>
                     {blog.url}
                 </div>
                 <br />
                 <div>
-                    likes {blog.likes} <button onClick={handleLikeButton}>like</button>
+                    likes {blog.likes} <button className="like-button" onClick={handleLikeButton}>like</button>
                 </div>
                 <br />
                 <div>

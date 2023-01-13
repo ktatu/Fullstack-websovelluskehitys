@@ -29,12 +29,11 @@ const App = () => {
 
     useEffect(() => {
         blogService.getAll().then((blogs) => {
+            console.log("blogs ", blogs)
             blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
             setBlogs( blogs )
         })
     }, [])
-
-    //const sortBlogs = () => blogs.sort((firstBlog, secondBlog) => secondBlog.likes - firstBlog.likes)
 
     const notify = (message) => {
         setNotification(message)
@@ -71,7 +70,8 @@ const App = () => {
         try {
             const returnedBlog = await blogService.create(blog)
             blogFormRef.current.toggleVisibility()
-            setBlogs(blogs.concat(returnedBlog))
+            setBlogs(blogs.concat({ ...returnedBlog, user: user }))
+            console.log("user ", user)
             notify(`${returnedBlog.title} by ${returnedBlog.author} added`)
         } catch (exception) {
             console.log(exception)

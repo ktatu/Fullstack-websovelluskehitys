@@ -29,6 +29,22 @@ Cypress.Commands.add("createBlog", (blog) => {
     const token = getToken()
     //console.log("token ", token)
     cy.request({ method: "POST", url: "http://localhost:3003/api/blogs", body: blog, auth: { bearer : token } })
+
+})
+
+Cypress.Commands.add("likeBlog", (blogTitle) => {
+    cy
+        .contains(blogTitle)
+        .parent()
+        .find(".like-button")
+        .click()
+
+})
+
+Cypress.Commands.add("checkForOrder", (blogTitle) => {
+    cy
+        .get("#blog-title")
+        .contains(blogTitle)
 })
 
 const getToken = () => JSON.parse(localStorage.getItem("loggedUser"))["token"]

@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 describe("Blog app", function() {
 
     const cypressUser = {
@@ -5,12 +6,20 @@ describe("Blog app", function() {
         name: "cypressName",
         password: "cypressPassword"
     }
-
-    const cypressBlog = {
+    /*
+    let cypressBlog = {
         author: "Cypress",
         title: "All about Cypress",
         url: "https://example.com"
-    }
+    }*/
+
+    let cypressBlog = {}
+
+    beforeEach(() => {
+        cypressBlog["author"] = "Cypress"
+        cypressBlog["title"] = "All about Cypress"
+        cypressBlog["url"] = "https://example.com"
+    })
 
     describe("When logged in", function() {
         beforeEach(function() {
@@ -51,11 +60,13 @@ describe("Blog app", function() {
         })
 
         it("A blog can be deleted", function() {
-            cy.createBlog(cypressBlog)
+            cy.createBlog(cypressBlog).then(() => {
+                console.log("cypress blog ", cypressBlog)
+            })
             cy.visit("http://localhost:3000")
 
             cy
-                .get("#expandedViewButton")
+                .get(".expandedViewButton")
                 .click()
 
             cy
@@ -73,7 +84,7 @@ describe("Blog app", function() {
             cy.visit("http://localhost:3000")
 
             cy
-                .get("#expandedViewButton")
+                .get(".expandedViewButton")
                 .click()
 
             cy
@@ -82,6 +93,49 @@ describe("Blog app", function() {
 
             cy.contains("likes 1")
         })
+
+        it.only("Blogs are sorted in order of likes", function() {
+            const secondBlog = {
+                title: "Cypress Blog 2",
+                author: "cypressUser2",
+                url: "https://example.com/blog2"
+            }
+
+            cy.createBlog(cypressBlog)
+
+            cy.createBlog(secondBlog)
+
+            cy.visit("http://localhost:3000")
+
+            cy
+                .get(".expandedViewButton")
+                .eq(0)
+                .click()
+
+            cy
+                .get(".expandedViewButton")
+                .eq(0)
+                .click()
+
+            cy.likeBlog(cypressBlog.title).wait(1000)
+            cy.likeBlog(cypressBlog.title).wait(1000)
+
+            cy
+                .get(".blog-title")
+                .eq(0)
+                .contains(cypressBlog.title)
+
+            cy.likeBlog(secondBlog.title).wait(1000)
+            cy.likeBlog(secondBlog.title).wait(1000)
+            cy.likeBlog(secondBlog.title).wait(1000)
+
+            cy
+                .get(".blog-title")
+                .eq(0)
+                .contains(secondBlog.title)
+
+        })
+
     })
 
 })
