@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const baseUrl = "http://localhost:3001/anecdotes"
+const baseUrl = "http://localhost:3001/anecdotes/"
 
 const getAll = async () => {
     const res = await axios.get(baseUrl)
@@ -15,6 +15,12 @@ const create = async (anecdoteText) => {
     return await res.data
 }
 
+const update = async (anecdote) => {
+    const res = await axios.put(baseUrl + anecdote.id, anecdote)
+
+    return await res.data
+}
+
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
@@ -25,4 +31,4 @@ const asObject = (anecdote) => {
   }
 }
 
-export default { create, getAll }
+export default { create, getAll, update }
