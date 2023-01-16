@@ -1,11 +1,6 @@
-import { useSelector } from 'react-redux'
 import { connect } from 'react-redux'
 
 const Notification = (props) => {
-    /*
-    let notification = useSelector(({ notification }) => {
-        return notification = notification.message
-    })*/
     let notification = props.notification.message
 
     const style = {
