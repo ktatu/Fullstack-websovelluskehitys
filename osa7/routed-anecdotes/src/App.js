@@ -24,6 +24,7 @@ const App = () => {
       id: 2
     }
   ])
+  const [notification, setNotification] = useState('')
 
   const match = useMatch("/anecdotes/:id")
   const anecdote = match
@@ -35,14 +36,22 @@ const App = () => {
     setAnecdotes(anecdotes.concat(anecdote))
   }
 
+  const addNotification = (message) => {
+    setNotification(message)
+    setTimeout(() => {
+        setNotification("")
+    }, 5000)
+  }
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes}/>} />
         <Route path="/about" element={<About />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route path="/create" element={<CreateNew addNew={addNew} addNotification={addNotification} />} />
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
       </Routes>
       <Footer />
@@ -83,7 +92,5 @@ export default App
 
   const anecdoteById = (id) =>
     anecdotes.find(a => a.id === id)
-
-const [notification, setNotification] = useState('')
 
 */
