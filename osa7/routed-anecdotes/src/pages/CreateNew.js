@@ -11,13 +11,19 @@ const CreateNew = ({ addNew, addNotification }) => {
     const handleSubmit = (e) => {
       e.preventDefault()
       addNew({
-        content: content.value,
-        author: author.value,
-        info: info.value,
+        content: content.inputVariables.value,
+        author: author.inputVariables.value,
+        info: info.inputVariables.value,
         votes: 0
       })
-      addNotification("a new anecdote " + content.value + " created!")
+      addNotification("a new anecdote " + content.inputVariables.value + " created!")
       navigate("/")
+    }
+
+    const resetFields = () => {
+        content.reset()
+        author.reset()
+        info.reset()
     }
   
     return (
@@ -26,18 +32,19 @@ const CreateNew = ({ addNew, addNotification }) => {
         <form onSubmit={handleSubmit}>
           <div>
             content
-            <input {...content} />
+            <input {...content.inputVariables} />
           </div>
           <div>
             author
-            <input {...author} />
+            <input {...author.inputVariables} />
           </div>
           <div>
             url for more info
-            <input {...info} />
+            <input {...info.inputVariables} />
           </div>
           <button>create</button>
         </form>
+        <button onClick={resetFields}>reset</button>
       </div>
     )
   
