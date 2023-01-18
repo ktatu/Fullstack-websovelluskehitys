@@ -1,89 +1,69 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import PropTypes from "prop-types"
 
-const Blog = ({ blog, addLike, loggedInUsername, deleteBlog }) => {
-    const [expandedBlogViewState, setExpandedBlogViewState] = useState(false)
+const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
+    if (!visible) return null
 
-    const handleBlogView = () => {
-        setExpandedBlogViewState(!expandedBlogViewState)
-    }
+    const addedBy = blog.user && blog.user.name ? blog.user.name : "anonymous"
 
-    const handleLikeButton = (event) => {
-        event.preventDefault()
+    return (
+        <div>
+            <div>
+                <a href={blog.url}>{blog.url}</a>
+            </div>
+            <div>
+                {blog.likes} likes{" "}
+                <button onClick={() => likeBlog(blog.id)}>like</button>
+            </div>
+            {addedBy}
+            {own && <button onClick={() => removeBlog(blog.id)}>remove</button>}
+        </div>
+    )
+}
 
-        let newLikes = (blog.likes += 1)
-        addLike({ ...blog, likes: newLikes, user: blog.user.id })
-    }
+const Blog = ({ blog, likeBlog, removeBlog, user }) => {
+    const [visible, setVisible] = useState(false)
 
-    const handleBlogRemoval = () => {
-        deleteBlog(blog.id)
-    }
-
-    const showDeleteButton = {
-        display: loggedInUsername === blog.user.username ? "" : "none",
-    }
-
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        paddingBottom: 5,
-        border: "solid",
+    const style = {
+        padding: 3,
+        margin: 5,
+        borderStyle: "solid",
         borderWidth: 1,
-        marginBottom: 5,
-    }
-
-    const MinimalBlogView = () => {
-        return (
-            <div>
-                <div>{blog.title}</div>
-                <div>{blog.author}</div>
-                <button
-                    className="expandedViewButton"
-                    id={"expandedViewButton-" + blog.id}
-                    onClick={handleBlogView}
-                >
-                    View
-                </button>
-            </div>
-        )
-    }
-
-    const ExpandedBlogView = () => {
-        return (
-            <div>
-                <span className="blog-title">{blog.title}</span> {blog.author}
-                <button onClick={handleBlogView}>Hide</button>
-                <br />
-                <div>{blog.url}</div>
-                <br />
-                <div>
-                    likes {blog.likes}{" "}
-                    <button className="like-button" onClick={handleLikeButton}>
-                        like
-                    </button>
-                </div>
-                <br />
-                <div>{blog.user.name}</div>
-                <br />
-                <div style={showDeleteButton}>
-                    <button onClick={handleBlogRemoval}>delete</button>
-                </div>
-            </div>
-        )
     }
 
     return (
-        <div style={blogStyle}>
-            {expandedBlogViewState ? <ExpandedBlogView /> : <MinimalBlogView />}
+        <div style={style} className="blog">
+            {blog.title} {blog.author}
+            <button onClick={() => setVisible(!visible)}>
+                {visible ? "hide" : "view"}
+            </button>
+            <BlogDetails
+                blog={blog}
+                visible={visible}
+                likeBlog={likeBlog}
+                removeBlog={removeBlog}
+                own={blog.user && user.username === blog.user.username}
+            />
         </div>
     )
 }
 
 Blog.propTypes = {
-    blog: PropTypes.object.isRequired,
-    addLike: PropTypes.func.isRequired,
-    loggedInUsername: PropTypes.string.isRequired,
-    deleteBlog: PropTypes.func.isRequired,
+    blog: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        author: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired,
+        likes: PropTypes.number.isRequired,
+        user: PropTypes.shape({
+            username: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+        }),
+    }).isRequired,
+    user: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+    }),
+    likeBlog: PropTypes.func.isRequired,
+    removeBlog: PropTypes.func.isRequired,
 }
 
 export default Blog

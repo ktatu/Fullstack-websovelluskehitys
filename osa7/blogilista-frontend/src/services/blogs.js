@@ -1,46 +1,33 @@
 import axios from "axios"
+import userService from "./user"
+
 const baseUrl = "/api/blogs"
 
-let userToken = null
+const config = () => {
+    return {
+        headers: {
+            Authorization: `bearer ${userService.getToken()}`,
+        },
+    }
+}
 
 const getAll = () => {
     const request = axios.get(baseUrl)
     return request.then((response) => response.data)
 }
 
-const create = async (blogData) => {
-    console.log("blog data ", blogData)
-
-    const config = {
-        headers: { Authorization: userToken },
-    }
-
-    const res = await axios.post(baseUrl, blogData, config)
-
-    console.log("palautettu blogi createn johdosta ", res.data)
-    return res.data
+const create = async (newObject) => {
+    const response = await axios.post(baseUrl, newObject, config())
+    return response.data
 }
 
-const remove = async (blogId) => {
-    const config = {
-        headers: { Authorization: userToken },
-    }
-
-    await axios.delete(baseUrl + "/" + blogId, config)
+const update = (id, newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject)
+    return request.then((response) => response.data)
 }
 
-const update = async (blog) => {
-    const config = {
-        headers: { Authorization: userToken },
-    }
-
-    const res = await axios.put(baseUrl + "/" + blog.id, blog, config)
-
-    return res.data
+const remove = (id) => {
+    return axios.delete(`${baseUrl}/${id}`, config())
 }
 
-const setToken = (token) => {
-    userToken = `bearer ${token}`
-}
-
-export default { getAll, create, setToken, remove, update }
+export default { getAll, create, update, remove }
