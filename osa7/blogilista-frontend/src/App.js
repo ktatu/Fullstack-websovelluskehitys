@@ -10,13 +10,13 @@ import blogService from "./services/blogs"
 import loginService from "./services/login"
 import userService from "./services/user"
 
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setNotification } from "./reducers/notificationReducer"
+import { addBlog, initializeBlogs, setBlogs } from "./reducers/blogReducer"
 
 const App = () => {
-    const [blogs, setBlogs] = useState([])
+    const blogs = useSelector((state) => state.blogs)
     const [user, setUser] = useState(null)
-    //const [notification, setNotification] = useState(null)
 
     const dispatch = useDispatch()
 
@@ -24,7 +24,7 @@ const App = () => {
     const byLikes = (b1, b2) => (b2.likes > b1.likes ? 1 : -1)
 
     useEffect(() => {
-        blogService.getAll().then((blogs) => setBlogs(blogs.sort(byLikes)))
+        dispatch(initializeBlogs())
     }, [])
 
     useEffect(() => {
@@ -82,7 +82,8 @@ const App = () => {
                         message: `a new blog '${createdBlog.title}' by ${createdBlog.author} added`,
                     })
                 )
-                setBlogs(blogs.concat(createdBlog))
+                dispatch(addBlog({ ...createdBlog, user }))
+                //setBlogs(blogs.concat(createdBlog))
                 blogFormRef.current.toggleVisibility()
             })
             .catch((error) => {
@@ -110,7 +111,7 @@ const App = () => {
 
         blogService.remove(id).then(() => {
             const updatedBlogs = blogs.filter((b) => b.id !== id).sort(byLikes)
-            setBlogs(updatedBlogs)
+            dispatch(setBlogs(updatedBlogs))
         })
     }
 
@@ -132,7 +133,8 @@ const App = () => {
             const updatedBlogs = blogs
                 .map((b) => (b.id === id ? updatedBlog : b))
                 .sort(byLikes)
-            setBlogs(updatedBlogs)
+
+            dispatch(setBlogs(updatedBlogs))
         })
     }
 

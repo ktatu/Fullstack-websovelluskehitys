@@ -24,6 +24,9 @@ const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
 const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     const [visible, setVisible] = useState(false)
 
+    console.log("blog ", blog)
+    console.log("user username ", user.username)
+
     const style = {
         padding: 3,
         margin: 5,
