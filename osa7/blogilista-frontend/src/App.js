@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 
 import Blog from "./components/Blog"
 import LoginForm from "./components/LoginForm"
@@ -10,6 +10,9 @@ import blogService from "./services/blogs"
 import loginService from "./services/login"
 import userService from "./services/user"
 
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery"
+
 import { useDispatch, useSelector } from "react-redux"
 import { setNotification } from "./reducers/notificationReducer"
 import {
@@ -18,6 +21,8 @@ import {
     deleteBlog,
     updateBlog,
 } from "./reducers/blogReducer"
+
+import { Button, Container, Typography } from "@mui/material"
 
 const App = () => {
     const blogs = useSelector((state) => state.blogs)
@@ -37,6 +42,18 @@ const App = () => {
             setUser(userFromStorage)
         }
     }, [])
+
+    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
+
+    const theme = useMemo(
+        (prefersDarkMode) =>
+            createTheme({
+                palette: {
+                    mode: prefersDarkMode ? "dark" : "light",
+                },
+            }),
+        [prefersDarkMode]
+    )
 
     const login = async (username, password) => {
         loginService
@@ -128,22 +145,24 @@ const App = () => {
 
     if (user === null) {
         return (
-            <>
-                <Notification />
-                <LoginForm onLogin={login} />
-            </>
+            <ThemeProvider theme={theme}>
+                <Container maxWidth="md">
+                    <Notification />
+                    <LoginForm onLogin={login} />
+                </Container>
+            </ThemeProvider>
         )
     }
 
     return (
-        <div>
-            <h2>blogs</h2>
+        <Container maxWidth="md">
+            <Typography variant="h2">Blogs</Typography>
 
             <Notification />
 
             <div>
                 {user.name} logged in
-                <button onClick={logout}>logout</button>
+                <Button onClick={logout}>logout</Button>
             </div>
 
             <Togglable buttonLabel="new note" ref={blogFormRef}>
@@ -161,7 +180,7 @@ const App = () => {
                     />
                 ))}
             </div>
-        </div>
+        </Container>
     )
 }
 

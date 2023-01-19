@@ -1,5 +1,6 @@
 import { useState } from "react"
 import PropTypes from "prop-types"
+import { Box, Button } from "@mui/material"
 
 const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
     if (!visible) return null
@@ -13,19 +14,22 @@ const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
             </div>
             <div>
                 {blog.likes} likes{" "}
-                <button onClick={() => likeBlog(blog.id)}>like</button>
+                <Button variant="outlined" onClick={() => likeBlog(blog.id)}>
+                    like
+                </Button>
             </div>
             {addedBy}
-            {own && <button onClick={() => removeBlog(blog.id)}>remove</button>}
+            {own && (
+                <Button variant="outlined" onClick={() => removeBlog(blog.id)}>
+                    remove
+                </Button>
+            )}
         </div>
     )
 }
 
 const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     const [visible, setVisible] = useState(false)
-
-    console.log("blog ", blog)
-    console.log("user username ", user.username)
 
     const style = {
         padding: 3,
@@ -35,11 +39,15 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     }
 
     return (
-        <div style={style} className="blog">
+        <Box style={style} className="blog">
             {blog.title} {blog.author}
-            <button onClick={() => setVisible(!visible)}>
+            <Button
+                sx={{ marginLeft: "10px" }}
+                variant="contained"
+                onClick={() => setVisible(!visible)}
+            >
                 {visible ? "hide" : "view"}
-            </button>
+            </Button>
             <BlogDetails
                 blog={blog}
                 visible={visible}
@@ -47,7 +55,7 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
                 removeBlog={removeBlog}
                 own={blog.user && user.username === blog.user.username}
             />
-        </div>
+        </Box>
     )
 }
 

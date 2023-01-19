@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Box, Button, TextField } from "@mui/material"
 
 const NewBlogForm = ({ onCreate }) => {
     const [title, setTitle] = useState("")
@@ -18,36 +19,32 @@ const NewBlogForm = ({ onCreate }) => {
             <h2>Create new</h2>
 
             <form onSubmit={handleSubmit}>
-                <div>
-                    title
-                    <input
+                <Box display="flex" flexDirection="row">
+                    <TextField
+                        required
                         value={title}
                         onChange={({ target }) => setTitle(target.value)}
-                        id="title"
-                        placeholder="title of the blog"
+                        id="outlined-name"
+                        label="title"
                     />
-                </div>
-                <div>
-                    author
-                    <input
+                    <TextField
+                        required
                         value={author}
                         onChange={({ target }) => setAuthor(target.value)}
-                        id="author"
-                        placeholder="author of the blog"
+                        id="outlined-name"
+                        label="author"
                     />
-                </div>
-                <div>
-                    url
-                    <input
+                    <TextField
+                        required
                         value={url}
                         onChange={({ target }) => setUrl(target.value)}
-                        id="url"
-                        placeholder="url of the blog"
+                        id="outlined-name"
+                        label="url"
                     />
-                </div>
-                <button id="create-butto" type="submit">
+                </Box>
+                <Button variant="outlined" id="create-butto" type="submit">
                     create
-                </button>
+                </Button>
             </form>
         </div>
     )

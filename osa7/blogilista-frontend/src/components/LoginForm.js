@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Button, TextField, Typography, Stack, Box } from "@mui/material"
 
 const LoginForm = ({ onLogin }) => {
     const [username, setUsername] = useState("")
@@ -10,32 +11,36 @@ const LoginForm = ({ onLogin }) => {
     }
 
     return (
-        <div>
-            <h2>Log in to application</h2>
+        <Stack spacing={5}>
+            <Typography variant="h2">Log in to application</Typography>
 
             <form onSubmit={handleSubmit}>
-                <div>
-                    username
-                    <input
+                <Box display="flex" flexDirection="row">
+                    <TextField
+                        id="outlined-name"
+                        required
+                        label="Username"
                         value={username}
                         onChange={({ target }) => setUsername(target.value)}
-                        id="username"
                     />
-                </div>
-                <div>
-                    password
-                    <input
-                        type="password"
+                    <TextField
+                        id="outlined-password-name"
+                        required
+                        label="Password"
                         value={password}
                         onChange={({ target }) => setPassword(target.value)}
-                        id="password"
                     />
-                </div>
-                <button id="login-button" type="submit">
+                </Box>
+                <Button
+                    sx={{ marginTop: "10px" }}
+                    variant="outlined"
+                    id="login-button"
+                    type="submit"
+                >
                     login
-                </button>
+                </Button>
             </form>
-        </div>
+        </Stack>
     )
 }
 
